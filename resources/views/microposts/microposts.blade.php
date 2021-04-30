@@ -12,7 +12,26 @@
                     </div>
                     <div>
                         {{-- 投稿内容 --}}
-                        <p class="mb-0">{!! nl2br(e($micropost->content)) !!}</p>
+                        <p class="mb-0">{!! nl2br(($micropost->content)) !!}</p>
+                    </div>
+                    <div>
+                        @if (Auth::id() != $user->micropost_id)
+                            @if (Auth::user()->is_favorite($micropost->id))
+                                {!! Form::open(['route' => ['user.unfavorite', $micropost->id], 'method' => 'delete']) !!}
+                                    {!! Form::submit('unfavorite', ['class' => "btn btn-success btn-sm"]) !!}
+                                {!! Form::close() !!}
+                            @else
+                                {!! Form::open(['route' => ['user.favorite', $micropost->id]]) !!}
+                                    {!! Form::submit('Favorite', ['class' => "btn btn-light btn-sm"]) !!}
+                                {!! Form::close() !!}
+                            @endif
+                        @endif
+                        @if (Auth::id() == $micropost->user_id)
+                            {{-- 投稿削除ボタンのフォーム --}}
+                            {!! Form::open(['route' => ['microposts.destroy', $micropost->id], 'method' => 'delete']) !!}
+                                {!! Form::submit('Delete', ['class' => 'btn btn-danger btn-sm']) !!}
+                            {!! Form::close() !!}
+                        @endif
                     </div>
                 </div>
             </li>
